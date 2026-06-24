@@ -14,10 +14,12 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^26.0.0",
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@repo/db" : "*"
+    "@repo/db": "*",
+    "express": "^5.2.1"
   }
 }
