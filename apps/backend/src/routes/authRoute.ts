@@ -3,13 +3,28 @@ import prisma from "@repo/db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+import { signupSchema, signinSchema } from "@repo/validation";
+import zod from "@repo/validation";
+
 
 const router = express.Router();
 
 
-router.post("/signup", async (req: Request, res: Response)=>{
-    const {fullName, email, password} = req.body;
+router.post("/signup", async (req: Request<{}, {}, zod.infer<typeof signupSchema> >, res: Response)=>{
+
+    const result = signupSchema.safeParse(req.body);
+
+    if(!result.success){
+        return res.json({
+            success : false,
+            msg : "invalid credentials provided",
+            error : `err: ${result.error.issues[0]?.message} , path: ${result.error.issues[0]?.path.toString()}`
+        })
+    }
+
     try {
+        const {email, password, fullName} = result.data;
+
         const userExist = await prisma.user.findUnique({
             where : {email}
         });
@@ -50,10 +65,23 @@ router.post("/signup", async (req: Request, res: Response)=>{
 })
 
 
-router.post("/signin", async (req: Request, res: Response)=>{
-    const {email, password} = req.body;
+router.post("/signin", async (req: Request<{}, {}, zod.infer<typeof signinSchema>>, res: Response)=>{
+
+    const result = signinSchema.safeParse(req.body);
+    
+     if(!result.success){
+        return res.json({
+            success : false,
+            msg : "invalid credentials provided",
+            error : `err: ${result.error.issues[0]?.message} , path: ${result.error.issues[0]?.path.toString()}`
+        })
+    }
+
 
     try {
+
+        const {email, password} = result.data;
+
         const userExist = await prisma.user.findUnique({
             where : {email}
         })
@@ -95,4 +123,15 @@ router.post("/signin", async (req: Request, res: Response)=>{
             error : error instanceof Error ? error.message : "unknown error occurred"
         })
     }
+})
+
+
+router.post("/logout", (req: Request, res: Response)=>{
+    res.clearCookie("token");
+
+    return res.json({
+        success : true,
+        msg : "user logged out successfully"
+    })
+    
 })
