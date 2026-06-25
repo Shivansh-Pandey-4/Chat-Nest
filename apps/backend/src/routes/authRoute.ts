@@ -133,5 +133,8 @@ router.post("/logout", (req: Request, res: Response)=>{
         success : true,
         msg : "user logged out successfully"
     })
-    
+
 })
+
+
+export default router;
