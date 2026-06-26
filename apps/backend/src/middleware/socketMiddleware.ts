@@ -16,7 +16,7 @@ async function socketMiddleware(request : http.IncomingMessage){
         }
     }
 
-    const url = new URL(request.url || "");
+    const url = new URL(request.url || "", `http://${request.headers.host}`);
     const requestRoomCode = url.searchParams.get("roomCode");
 
     if(!requestRoomCode || !requestRoomCode.trim()){
@@ -62,6 +62,8 @@ async function socketMiddleware(request : http.IncomingMessage){
         return {
             success : true,
             msg : "user joined the room",
+            userFullName : userExist.fullName,
+            userId : userExist.id,
             roomCode : userExist.room?.roomCode,
             roomId : userExist.roomId
         }
