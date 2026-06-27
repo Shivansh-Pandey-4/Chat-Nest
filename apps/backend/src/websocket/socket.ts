@@ -4,6 +4,7 @@ import socketMiddleware from "../middleware/socketMiddleware.js";
 import type { IUserInfo } from "../types/socket.js";
 import joinHandler from "./handlers/joinHandler.js";
 import chatHandler from "./handlers/chatHandler.js";
+import { clientMsgSchema } from "@repo/validation";
 
 
 const allSockets = new Map<string, Set<WebSocket>>();
@@ -15,7 +16,6 @@ function initializeWebsocket(httpServer : http.Server ){
     const wss = new WebSocketServer({server : httpServer});
 
     wss.on("connection",  async (socket, request)=>{
-
         const authResponse =  await socketMiddleware(request);
 
         if(!authResponse.success){
@@ -25,16 +25,32 @@ function initializeWebsocket(httpServer : http.Server ){
         socket.on("message", (data)=>{
             try {
                 const parsedMessage = JSON.parse(data.toString());
+                const result = clientMsgSchema.safeParse(parsedMessage);
 
-                if(parsedMessage.type === "join"){
+                if(!result.success){
+                    const err = result.error.issues[0]?.message;
+                    const path = result.error.issues[0]?.path.toString();
+
+                    return socket.send(JSON.stringify({
+                        type : "error",
+                        payload : {
+                            msg : `err: ${err}, path: ${path}`
+                        }
+                    }))
+                }
+
+                const clientMsg = result.data;
+
+                if(clientMsg.type === "join"){
                     joinHandler({allSockets, authResponse, socketMapping, currentSocket: socket});
                     return;
                 }
 
-                if(parsedMessage.type === "chat"){
-                    const msg = parsedMessage.payload.msg;
+                if(clientMsg.type === "chat"){
+                    const msg = clientMsg.payload.msg;
 
-                    return chatHandler({allSockets, authResponse, socketMapping, currentSocket: socket}, msg )
+                     chatHandler({allSockets, authResponse, socketMapping, currentSocket: socket}, msg );
+                     return;
                 }
 
             } catch (error) {
@@ -44,7 +60,6 @@ function initializeWebsocket(httpServer : http.Server ){
                             msg : error instanceof Error ? error.message : "unknown error occurred"
                         }
                     }))
-
             }
 
         })
