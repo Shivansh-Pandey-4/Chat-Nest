@@ -16,5 +16,9 @@ const chatSchema = zod.object({
     })
 })
 
+const leaveSchema = zod.object({
+    type : zod.literal("leave"),
+})
 
-export const clientMsgSchema = zod.discriminatedUnion("type", [joinSchema, chatSchema]);
+
+export const clientMsgSchema = zod.discriminatedUnion("type", [joinSchema, chatSchema, leaveSchema]);
