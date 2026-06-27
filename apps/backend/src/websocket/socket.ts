@@ -1,11 +1,15 @@
 import { WebSocketServer, WebSocket } from "ws";
 import http from "node:http";
-import socketMiddleware from "../middleware/socketMiddleware.js";
+
 import type { IUserInfo } from "../types/socket.js";
 import joinHandler from "./handlers/joinHandler.js";
 import chatHandler from "./handlers/chatHandler.js";
-import { clientMsgSchema } from "@repo/validation";
 import socketCloseHandler from "./handlers/socketCloseHandler.js";
+
+import socketMiddleware from "../middleware/socketMiddleware.js";
+
+import { clientMsgSchema } from "@repo/validation";
+import typingHandler from "./handlers/typingHandler.js";
 
 
 const allSockets = new Map<string, Set<WebSocket>>();
@@ -54,6 +58,22 @@ function initializeWebsocket(httpServer : http.Server ){
                      return;
                 }
 
+                if(clientMsg.type === "leave"){
+                    socket.send(JSON.stringify({
+                        type : "leave",
+                        payload : {
+                            msg : "successfully left the room"
+                        }
+                    }))
+
+                    socket.close();
+                    return;
+                }
+
+                if(clientMsg.type === "typing"){
+                    typingHandler({allSockets, authResponse, currentSocket: socket, socketMapping});
+                    return;
+                }
 
             } catch (error) {
                     return socket.send(JSON.stringify({
