@@ -3,10 +3,12 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken"
 import type { MyJwtPayload } from "../types/jwt.js";
 import prisma from "@repo/db";
+import type { IAuthResponse } from "../types/socket.js";
 
 
 
-async function socketMiddleware(request : http.IncomingMessage){
+async function socketMiddleware(request : http.IncomingMessage): Promise<IAuthResponse>{
+    
     const token = cookie.parseCookie(request.headers.cookie || "").token;
     
     if(!token || !token.trim()){
