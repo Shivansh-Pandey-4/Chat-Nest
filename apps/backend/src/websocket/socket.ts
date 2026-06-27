@@ -5,6 +5,7 @@ import type { IUserInfo } from "../types/socket.js";
 import joinHandler from "./handlers/joinHandler.js";
 import chatHandler from "./handlers/chatHandler.js";
 import { clientMsgSchema } from "@repo/validation";
+import socketCloseHandler from "./handlers/socketCloseHandler.js";
 
 
 const allSockets = new Map<string, Set<WebSocket>>();
@@ -53,6 +54,7 @@ function initializeWebsocket(httpServer : http.Server ){
                      return;
                 }
 
+
             } catch (error) {
                     return socket.send(JSON.stringify({
                         type : "error",
@@ -65,7 +67,9 @@ function initializeWebsocket(httpServer : http.Server ){
         })
 
         socket.on("close", ()=>{
-            
+            socketCloseHandler({allSockets, authResponse, currentSocket: socket,socketMapping});
+
+            return;
         })
 
 
