@@ -2,6 +2,8 @@ import "@repo/ui/styles.css";
 import "./globals.css";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
+import Provider from "../providers/provider";
+
 
 export const metadata: Metadata = {
   title: "Create Turborepo",
@@ -16,10 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${GeistSans.className} min-h-screen flex flex-col py-12 px-4`}>
-        <main className="flex-1">
-          {children}
-        </main>
-        <footer className="text-center">Hell world footer</footer>
+        <Provider>
+          <main className="flex-1">
+            {children}
+          </main>
+          <footer className="text-center">Hell world footer</footer>
+        </Provider>
       </body>
     </html >
   );
