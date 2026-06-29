@@ -26,7 +26,7 @@ export default function SignupForm() {
 
     const router = useRouter();
 
-    function handleOnChange(e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>) {
+    function handleOnChange(e: React.ChangeEvent<HTMLInputElement>) {
         setInputValue(prev => ({ ...prev, [e.target.name]: e.target.value }));
     }
 
