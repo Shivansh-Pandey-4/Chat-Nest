@@ -15,7 +15,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={GeistSans.className}>{children}</body>
-    </html>
+      <body className={`${GeistSans.className} min-h-screen flex flex-col py-12 px-4`}>
+        <main className="flex-1">
+          {children}
+        </main>
+        <footer className="text-center">Hell world footer</footer>
+      </body>
+    </html >
   );
 }
