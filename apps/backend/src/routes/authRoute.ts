@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 import { signupSchema, signinSchema } from "@repo/validation";
 import zod from "@repo/validation";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 
 const router = express.Router();
@@ -134,6 +135,42 @@ router.post("/logout", (req: Request, res: Response)=>{
         msg : "user logged out successfully"
     })
 
+})
+
+
+router.get("/me", authMiddleware, async (req: Request, res: Response)=>{
+     try {
+        const userExist = await prisma.user.findUnique({
+            where : {
+                id : req.userInfo.id
+            },
+            include : {room : true}
+        })
+
+        if(!userExist){
+            return res.status(400).json({
+                success : false,
+                msg : "user not found"
+            })
+        }
+
+        return res.json({
+            success : true,
+            msg : "user found successfully",
+            userFullName : userExist.fullName,
+            userEmail : userExist.email,
+            userId : userExist.id,
+            roomId : userExist.roomId,
+            roomCode : userExist.room?.roomCode
+        });
+
+     } catch (error) {
+        return res.status(500).json({
+            success : false,
+            msg : "failed to get user",
+            error : error instanceof Error ? error.message : "Unknown error occurred"
+        })
+     }
 })
 
 
