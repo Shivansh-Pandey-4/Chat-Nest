@@ -1,9 +1,16 @@
 import { MessageCircle } from "lucide-react"
 import JoinRoom from "../components/JoinRoom"
+import { authVerify } from "../lib/auth"
+import { redirect } from "next/navigation";
 
 
-export default function Home() {
 
+export default async function Home() {
+
+  const result = await authVerify();
+  if (!result) {
+    redirect("/signup");
+  }
 
   return (
     <div className="py-12">
