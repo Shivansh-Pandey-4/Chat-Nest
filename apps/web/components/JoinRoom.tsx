@@ -65,7 +65,51 @@ export default function JoinRoom() {
     }
 
     async function joinRoomFn(roomCode: string) {
+        try {
+            setIsPending(true);
 
+            const response = await fetch(`http://localhost:3000/room/join/${roomCode}`, {
+                method: "POST",
+                credentials: "include"
+            });
+
+            let data: IData | null = null;
+
+            try {
+                data = await response.json();
+            } catch (error) {
+                data = null;
+            }
+
+            if (!response.ok) {
+                if (data && data.success === false) {
+                    toast.error(data.error || data.msg);
+                    return;
+                }
+
+                toast.error("failed to join room");
+                return;
+            }
+
+            if (data && data.success) {
+                toast.success(data.msg);
+                router.push(`/room/${data.roomCode}`);
+                return;
+            }
+
+        } catch (error) {
+            if (error instanceof TypeError) {
+                toast.error(`${error.message} :- Network error`);
+                return;
+            }
+
+            toast.error(error instanceof Error ? error.message : "Unknown error occurred");
+
+            return;
+
+        } finally {
+            setIsPending(false);
+        }
     }
 
     function handleJoinRoom() {
