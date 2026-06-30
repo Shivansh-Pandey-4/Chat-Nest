@@ -1,22 +1,6 @@
 import { cookies } from "next/headers";
+import type { IData } from "./types";
 
-interface ISuccess{
-    success : true,
-    msg : string;
-    userFullName : string;
-    userEmail : string;
-    userId : number;
-    roomId ?: number;
-    roomCode ?: string;
-}
-
-interface IFailure{
-    success : false,
-    msg : string;
-    error ?: string;
-}
-
-type IData = ISuccess | IFailure;
 
 
 export async function authVerify(){

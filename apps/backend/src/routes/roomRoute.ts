@@ -26,7 +26,7 @@ router.post("/create", authMiddleware, async(req: Request, res: Response)=>{
         if(userExist.roomId){
             return res.json({
                 success : true,
-                msg : "user allReady present in a room",
+                msg : "user already joined in a room",
                 roomId : userExist.roomId,
                 roomCode : userExist.room?.roomCode
             })
@@ -124,4 +124,7 @@ router.post("/join/:roomCode", authMiddleware, async(req: Request<{roomCode: str
         })
     }
 
-})
+});
+
+
+export default router;

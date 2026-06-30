@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import Provider from "../providers/provider";
+import Footer from "../components/Footer";
 
 
 export const metadata: Metadata = {
@@ -17,12 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${GeistSans.className} min-h-screen flex flex-col py-12 px-4`}>
+      <body className={`${GeistSans.className} min-h-screen flex flex-col py-12 px-4 max-w-3xl mx-auto`}>
         <Provider>
           <main className="flex-1">
             {children}
           </main>
-          <footer className="text-center">Hell world footer</footer>
+          <Footer />
         </Provider>
       </body>
     </html >

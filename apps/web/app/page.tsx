@@ -15,7 +15,11 @@ export default async function Home() {
   return (
     <div className="py-12">
 
-      <div className="max-w-3xl w-full mx-auto border border-gray-50 py-8 px-5 rounded-md">
+      <div className=" mb-4 text-xl flex justify-center capitalize">
+        <span className="border border-gray-500 p-1 px-4 rounded-md text-center">Welcome {result.userFullName} 🙂</span>
+      </div>
+
+      <div className=" border border-gray-50 py-8 px-5 rounded-md">
 
         <div className="">
           <h1 className=" flex items-center gap-x-2 text-3xl">  <MessageCircle size={35} className="text-gray-300" />  <span className="text-white"> Real-Time Chat Application </span></h1>

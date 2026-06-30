@@ -59,7 +59,7 @@ export default function SigninForm() {
 
             if (data && data.success) {
                 toast.success(data?.msg || "user signed up successfully");
-                router.push("/signin");
+                router.push("/");
                 return;
             }
 
