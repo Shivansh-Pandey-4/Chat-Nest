@@ -15,6 +15,7 @@ export default async function RoomCode({ params }: { params: Promise<{ roomCode:
     }
 
 
+
     return (
         <div>
             <div className="border px-4 py-6 rounded-md">
@@ -23,9 +24,7 @@ export default async function RoomCode({ params }: { params: Promise<{ roomCode:
 
                     <CopyRoomText roomCode={result.roomCode} />
                 </section>
-                <section className="border border-zinc-300 rounded-md mt-4 h-80">
-                    //chat room
-                </section>
+
                 <section className="mt-4">
                     <ChatForm data={result} />
                 </section>
